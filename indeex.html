@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Billing System</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input, select, button { padding: 8px; margin: 5px; }
+    table { margin-top: 20px; border-collapse: collapse; }
+    td, th { border: 1px solid #ccc; padding: 10px; }
+  </style>
+</head>
+<body>
+
+<h2>Billing System</h2>
+
+<select id="service">
+  <option value="cheap">Cheap Followers</option>
+  <option value="real">Real Followers</option>
+  <option value="tamil">Tamil Followers</option>
+  <option value="views">Views</option>
+  <option value="likes">Likes</option>
+</select>
+
+<input type="number" id="quantity" placeholder="Enter quantity">
+
+<button onclick="addItem()">Add</button>
+<button onclick="generateBill()">Generate Bill</button>
+
+<table id="billTable">
+  <tr>
+    <th>Service</th>
+    <th>Qty</th>
+    <th>Price</th>
+  </tr>
+</table>
+
+<h3 id="total"></h3>
+
+<script>
+let items = [];
+
+function calculatePrice(service, qty) {
+  let price = 0;
+
+  if (service === "cheap") {
+    let base = 0.12 * qty;
+    if (qty >= 10000) base *= 0.7;
+    else if (qty >= 5000) base *= 0.83;
+    price = base;
+  }
+
+  else if (service === "real") {
+    let base = 0.30 * qty;
+    if (qty >= 10000) base *= 0.83;
+    else if (qty >= 5000) base *= 0.87;
+    price = base;
+  }
+
+  else if (service === "tamil") {
+    price = 0.45 * qty;
+  }
+
+  else if (service === "views") {
+    let base = 0.015 * qty;
+    if (qty >= 1000000) base *= 0.2;
+    else if (qty >= 100000) base *= 0.35;
+    else if (qty >= 10000) base *= 0.6;
+    price = base;
+  }
+
+  else if (service === "likes") {
+    price = 0.045 * qty;
+  }
+
+  return Math.round(price);
+}
+
+function addItem() {
+  let service = document.getElementById("service").value;
+  let qty = parseInt(document.getElementById("quantity").value);
+
+  if (!qty) return alert("Enter quantity");
+
+  let price = calculatePrice(service, qty);
+
+  items.push({ service, qty, price });
+
+  alert("Item Added!");
+}
+
+function generateBill() {
+  let table = document.getElementById("billTable");
+  table.innerHTML = `
+    <tr>
+      <th>Service</th>
+      <th>Qty</th>
+      <th>Price</th>
+    </tr>
+  `;
+
+  let total = 0;
+
+  items.forEach(item => {
+    total += item.price;
+
+    table.innerHTML += `
+      <tr>
+        <td>${item.service}</td>
+        <td>${item.qty}</td>
+        <td>₹${item.price}</td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("total").innerText = "Total: ₹" + total;
+}
+</script>
+
+</body>
+</html>
